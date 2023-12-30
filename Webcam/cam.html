@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <video id="webcam" autoplay></video>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let intervalId;
+
+        // Access the webcam
+        if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+            video.srcObject = stream;
+            startCapture();
+            })
+            .catch(err => {
+            console.error("Error accessing webcam: ", err);
+            });
+        } else {
+        console.error("getUserMedia not supported in this browser.");
+        }
+
+        // Start capturing images
+        function startCapture() {
+        intervalId = setInterval(captureImage, 2000); // Capture every 2 seconds
+        }
+
+        // Capture image from video and process it
+        function captureImage() {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, 640, 640);
+
+        // Convert canvas to image (e.g., PNG)
+        const imageData = canvas.toDataURL('image/png');
+
+        // Process the image data (e.g., store it or send it to a server)
+        console.log(imageData);
+        // You can replace the above line with code to handle the image data
+        }
+
+        // Call this function to stop capturing
+        function stopCapture() {
+        clearInterval(intervalId);
+        }
+
+    </script>
+</body>
+</html>
